@@ -20,4 +20,6 @@ The system also includes health monitoring features such as weight tracking, BMI
 By integrating HTML, CSS, JavaScript, database storage, and AI-based logic, the Smart Health Recommendation System offers a user-friendly, responsive, and scalable platform suitable for both mobile and desktop devices. This system aims to promote preventive healthcare, reduce unnecessary hospital visits, and increase health awareness among users.
 
 ## Live Site 🗿
-link []
+<ul>
+ <li><a href="https://0xabdul.github.io/Smart-Health-Recommdation-System/">CLICK ME !</a></li>
+</ul>
