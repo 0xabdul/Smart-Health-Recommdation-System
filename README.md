@@ -21,5 +21,5 @@ By integrating HTML, CSS, JavaScript, database storage, and AI-based logic, the 
 
 ## Live Site 🗿
 <ul>
- <li><a href="https://0xabdul.github.io/Smart-Health-Recommdation-System/">CLICK ME !</a></li>
+ <li><a href="">CLICK ME !</a></li>
 </ul>
