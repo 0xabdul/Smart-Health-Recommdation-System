@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Skin Disease Detection System</title>
+    <link rel="stylesheet" href="skin-detection.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-wrap">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-inner">
+                <a href="index.html" class="back-link" title="Back to Health System">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Back</span>
+                </a>
+                <div class="logo">
+                    <i class="fas fa-dna"></i>
+                    <div>
+                        <h1>AI Skin Disease Detection</h1>
+                        <p>Powered by deep learning · Browser-based analysis</p>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button type="button" id="btn-history" class="icon-btn" title="Scan history">
+                        <i class="fas fa-history"></i>
+                        <span>History</span>
+                    </button>
+                    <button type="button" id="btn-info" class="icon-btn" title="About">
+                        <i class="fas fa-info-circle"></i>
+                        <span>About</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <main class="main">
+            <!-- Model status bar -->
+            <div class="model-status" id="model-status">
+                <i class="fas fa-circle-notch fa-spin"></i>
+                <span>Loading AI model…</span>
+            </div>
+
+            <div class="content-grid">
+                <!-- Input column -->
+                <section class="panel input-panel">
+                    <h2><i class="fas fa-camera"></i> Input</h2>
+                    <div class="input-tabs">
+                        <button type="button" class="tab active" data-tab="upload">Upload</button>
+                        <button type="button" class="tab" data-tab="camera">Camera</button>
+                    </div>
+
+                    <div id="upload-area" class="upload-area" data-tab-content="upload">
+                        <input type="file" id="file-input" accept="image/*" hidden>
+                        <div class="drop-zone" id="drop-zone">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Drag & drop a skin image here</p>
+                            <p class="sub">or click to browse (JPG, PNG, WebP)</p>
+                            <button type="button" class="btn btn-primary" id="btn-browse">Browse</button>
+                        </div>
+                    </div>
+
+                    <div id="camera-area" class="camera-area hidden" data-tab-content="camera">
+                        <div class="camera-placeholder" id="camera-placeholder">
+                            <i class="fas fa-video"></i>
+                            <p>Use your camera to capture a skin area</p>
+                            <button type="button" class="btn btn-primary" id="btn-start-camera">Start camera</button>
+                        </div>
+                        <div class="camera-live hidden" id="camera-live">
+                            <video id="camera-video" autoplay playsinline muted></video>
+                            <div class="camera-controls">
+                                <button type="button" class="btn btn-primary" id="btn-capture"><i class="fas fa-camera"></i> Capture</button>
+                                <button type="button" class="btn btn-secondary" id="btn-stop-camera">Stop</button>
+                            </div>
+                        </div>
+                        <canvas id="camera-canvas" hidden></canvas>
+                    </div>
+
+                    <div class="preview-wrap hidden" id="preview-wrap">
+                        <div class="preview-header">
+                            <span>Preview</span>
+                            <button type="button" class="btn-icon" id="btn-clear" title="Clear"><i class="fas fa-times"></i></button>
+                        </div>
+                        <div class="preview-container">
+                            <img id="preview-img" alt="Selected skin image">
+                        </div>
+                        <button type="button" class="btn btn-primary btn-analyze" id="btn-analyze">
+                            <i class="fas fa-search"></i> Analyze again
+                        </button>
+                    </div>
+                </section>
+
+                <!-- Results column -->
+                <section class="panel results-panel">
+                    <h2><i class="fas fa-chart-line"></i> Analysis results</h2>
+                    <div id="results-empty" class="results-empty">
+                        <i class="fas fa-microscope"></i>
+                        <p><strong>Upload your skin image once</strong> — analysis, foods &amp; home remedies will appear automatically.</p>
+                        <p class="sub">Or use the Camera tab to capture an image.</p>
+                    </div>
+                    <div id="results-content" class="results-content hidden">
+                        <div class="result-primary">
+                            <span class="label">Most likely condition</span>
+                            <div class="condition-card primary" id="primary-condition">
+                                <span class="name" id="primary-name">—</span>
+                                <span class="confidence" id="primary-confidence">—</span>
+                            </div>
+                        </div>
+                        <div class="result-foods" id="result-foods">
+                            <span class="label"><i class="fas fa-utensils"></i> Recommended foods</span>
+                            <ul class="solution-list" id="foods-list"></ul>
+                        </div>
+                        <div class="result-remedies" id="result-remedies">
+                            <span class="label"><i class="fas fa-home"></i> Home remedies & tips</span>
+                            <ul class="solution-list" id="remedies-list"></ul>
+                        </div>
+                        <div class="result-details">
+                            <span class="label">All conditions (confidence)</span>
+                            <div class="confidence-bars" id="confidence-bars"></div>
+                        </div>
+                        <div class="result-meta">
+                            <span class="label">Analysis metadata</span>
+                            <ul class="meta-list" id="meta-list"></ul>
+                        </div>
+                        <div class="disclaimer">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <p>This tool is for <strong>informational use only</strong> and does not replace a doctor’s diagnosis. Always consult a dermatologist for medical advice.</p>
+                        </div>
+                    </div>
+                    <div id="results-loading" class="results-loading hidden">
+                        <i class="fas fa-circle-notch fa-spin"></i>
+                        <p>Analyzing image…</p>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Disease info cards (expandable) -->
+            <section class="panel info-panel">
+                <h2><i class="fas fa-book-medical"></i> Condition guide</h2>
+                <div class="info-grid" id="info-grid"></div>
+            </section>
+
+            <!-- History sidebar (modal) -->
+            <aside class="history-sidebar hidden" id="history-sidebar">
+                <div class="sidebar-header">
+                    <h3>Scan history</h3>
+                    <button type="button" class="btn-icon" id="btn-close-history"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="history-list" id="history-list"></div>
+                <button type="button" class="btn btn-secondary btn-clear-history" id="btn-clear-history">Clear history</button>
+            </aside>
+            <div class="sidebar-overlay hidden" id="sidebar-overlay"></div>
+
+            <!-- About modal -->
+            <div class="modal hidden" id="about-modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>About this system</h3>
+                        <button type="button" class="btn-icon" id="btn-close-about"><i class="fas fa-times"></i></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>This <strong>AI Skin Disease Detection System</strong> uses a neural network to analyze skin images and suggest possible conditions. It is intended for education and preliminary screening only.</p>
+                        <p><strong>Features:</strong> image upload, live camera capture, confidence scores, condition guide, and local scan history. Processing runs in your browser; no images are sent to a server.</p>
+                        <p><strong>Disclaimer:</strong> Always seek a professional dermatologist for diagnosis and treatment. Do not rely on this tool for medical decisions.</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>AI Skin Disease Detection System · For educational use only · Not a substitute for professional medical advice</p>
+        </footer>
+    </div>
+
+    <!-- TensorFlow.js and MobileNet -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.0/dist/mobilenet.min.js"></script>
+    <script src="skin-detection.js"></script>
+</body>
+</html>
