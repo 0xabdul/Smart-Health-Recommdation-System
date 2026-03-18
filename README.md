@@ -3,7 +3,7 @@ A Smart Health Recommendation System is an intelligent web-based application des
 
 The system allows users to register and log in securely and enter basic health details such as age, gender, height, weight, and daily habits. Using this data, the application calculates important health indicators like BMI (Body Mass Index) and evaluates the user’s health status.
  
-Users can input common symptoms such as fever, cold, cough, headache, stomach pain, or fatigue. Based on the symptoms and stored health data, the system provides smart recommendations , including:
+Users can input common symptoms such as fever, cold, cough, headache, stomach pain, or fatigue. Based on the symptoms and stored health data, the system provides smart recommendations.
 
 - Possible health conditions (basic prediction)
 
